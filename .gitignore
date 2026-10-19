@@ -1,0 +1,18 @@
+# Archivos de Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Reportes generados por la app
+*.pdf
+
+# Entornos virtuales
+venv/
+env/
+
+# Archivos del sistema (Windows/Mac)
+.DS_Store
+Thumbs.db
+
+# Configuraciones de VS Code
+.vscode/
