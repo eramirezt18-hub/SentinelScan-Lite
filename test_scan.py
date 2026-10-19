@@ -1,6 +1,6 @@
 import socket
 
-objetivo = "127.0.0.1"  # Tu propia computadora
+objetivo = "127.0.0.1"  #Puerto de computadora actual
 puertos = [80, 443, 3306, 8080]
 
 print(f"Escaneando {objetivo}...")
