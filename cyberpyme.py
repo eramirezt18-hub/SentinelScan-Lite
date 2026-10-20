@@ -24,7 +24,6 @@ def procesar_escaneo():
     ventana.update()
     
     try:
-        # Validar que el usuario haya puesto un número
         limite_str = entrada_limite.get()
         if not limite_str.isdigit():
             messagebox.showerror("Error", "Por favor, ingresa un número válido de dispositivos permitidos.")
@@ -38,9 +37,10 @@ def procesar_escaneo():
         resultado = subprocess.check_output(comando, shell=True).decode('utf-8', errors='ignore')
         lineas = resultado.split('\n')
         
+        macs_vistas = set() # Aquí guardaremos las MACs para no repetirlas
         dispositivos_validos = 0
         
-        # Expresión regular para buscar IPs y MACs válidas y evitar falsos positivos
+        # Expresión regular para buscar IPs y MACs válidas
         patron_ip = re.compile(r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\s+([0-9a-fA-F-]{17})')
         
         for linea in lineas:
@@ -49,30 +49,35 @@ def procesar_escaneo():
                 ip = match.group(1)
                 mac = match.group(2).lower()
                 
-                # Ignorar MACs de Broadcast o Multicast que causan falsos positivos
+                # Ignorar MACs de Broadcast o Multicast
                 if mac == "ff-ff-ff-ff-ff-ff" or ip.endswith(".255"):
                     continue
                 
-                # Si es una IP de red local (192.168, 10, 172)
+                # FILTRO CLAVE: Si la MAC ya fue contada, la ignoramos
+                if mac in macs_vistas:
+                    continue
+                
+                # Si es una IP de red local
                 if ip.startswith("192.168.") or ip.startswith("10.") or ip.startswith("172."):
-                    lista_dispositivos.insert(tk.END, f"📱 Dispositivo IP: {ip} | MAC: {mac}")
+                    macs_vistas.add(mac) # Guardamos la MAC para no volver a contarla
                     dispositivos_validos += 1
+                    lista_dispositivos.insert(tk.END, f"📱 Dispositivo IP: {ip} | MAC: {mac}")
                     
         # --- Lógica de Alerta con el límite del usuario ---
         if dispositivos_validos > limite_permitido:
             lbl_estado.config(text=f"⚠️ Alerta: ¡{dispositivos_validos} dispositivos detectados! (Límite: {limite_permitido})", fg="#ff4d4d")
             messagebox.showwarning(
                 "Alerta de Seguridad - CyberPyme", 
-                f"¡Se han detectado {dispositivos_validos} dispositivos en tu red!\n\n"
+                f"¡Se han detectado {dispositivos_validos} dispositivos únicos en tu red!\n\n"
                 f"Tu límite configurado es de {limite_permitido} dispositivos.\n"
-                "Si no reconoces a los dispositivos de la lista, podría ser un intruso robando tu WiFi.\n\n"
+                "Revisa la lista para ver si hay algún intruso.\n\n"
                 "Recomendación: Cambia tu contraseña del WiFi y revisa la lista."
             )
         else:
             lbl_estado.config(text=f"✅ Red Segura. {dispositivos_validos} dispositivos (Límite: {limite_permitido}).", fg="#00ff00")
             messagebox.showinfo(
                 "Red Segura - CyberPyme", 
-                f"Se detectaron {dispositivos_validos} dispositivos.\n"
+                f"Se detectaron {dispositivos_validos} dispositivos únicos.\n"
                 f"Esto está dentro de tu límite de {limite_permitido}.\n\n"
                 "Tu red se encuentra protegida."
             )
