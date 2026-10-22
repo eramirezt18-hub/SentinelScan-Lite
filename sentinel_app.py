@@ -8,7 +8,7 @@ from reportlab.pdfgen import canvas as pdfcanvas
 import os
 from PIL import Image, ImageTk
 
-# --- Clasificación de Riesgos (Basado en el manual de Sentinel) ---
+# --- Clasificación de Riesgo ---
 riesgos = {
     21: "CRÍTICO (FTP sin cifrar)",
     22: "MEDIO (SSH)",

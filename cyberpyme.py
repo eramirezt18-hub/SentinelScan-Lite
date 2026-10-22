@@ -7,7 +7,7 @@ import socket
 import re
 from PIL import Image, ImageTk
 
-# --- Función para obtener la IP local ---
+# --- Funcion para obtener la IP local ---
 def obtener_ip_local():
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -18,7 +18,7 @@ def obtener_ip_local():
     except Exception:
         return "Desconocida"
 
-# --- Función principal de escaneo ---
+# --- Funcion principal de escaneo ---
 def procesar_escaneo():
     lista_dispositivos.delete(0, tk.END)
     lbl_estado.config(text="🔍 Analizando dispositivos conectados a la red...", fg="yellow")
@@ -38,7 +38,7 @@ def procesar_escaneo():
         resultado = subprocess.check_output(comando, shell=True).decode('utf-8', errors='ignore')
         lineas = resultado.split('\n')
         
-        macs_vistas = set() # Aquí guardaremos las MACs para no repetirlas
+        macs_vistas = set()
         dispositivos_validos = 0
         
         # Expresión regular para buscar IPs y MACs válidas
@@ -50,11 +50,10 @@ def procesar_escaneo():
                 ip = match.group(1)
                 mac = match.group(2).lower()
                 
-                # Ignorar MACs de Broadcast o Multicast
+                
                 if mac == "ff-ff-ff-ff-ff-ff" or ip.endswith(".255"):
                     continue
                 
-                # FILTRO CLAVE: Si la MAC ya fue contada, la ignoramos
                 if mac in macs_vistas:
                     continue
                 
