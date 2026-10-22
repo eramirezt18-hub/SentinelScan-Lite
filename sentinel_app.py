@@ -127,7 +127,7 @@ if logo_img:
 
 tk.Label(
     frame_header,
-    text="CYBERPYME",
+    text="Sentinel Scan",
     font=("Helvetica", 24, "bold"),
     fg="#00d4ff",
     bg="#0a0f1e"
