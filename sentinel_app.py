@@ -6,6 +6,7 @@ import threading
 from datetime import datetime
 from reportlab.pdfgen import canvas as pdfcanvas
 import os
+from PIL import Image, ImageTk
 
 # --- Clasificación de Riesgos (Basado en el manual de Sentinel) ---
 riesgos = {
@@ -110,7 +111,27 @@ ventana.geometry("750x600")
 ventana.configure(bg="#0a0f1e") 
 
 # Título y Subtítulo
-tk.Label(ventana, text="🛡️ SENTINELSCAN LITE", font=("Helvetica", 24, "bold"), fg="#00d4ff", bg="#0a0f1e").pack(pady=15)
+try:
+    img_original = Image.open("LogoSentinelScan.png")  # tu imagen (png, jpg, etc.)
+    img_redimensionada = img_original.resize((140, 140), Image.Resampling.LANCZOS)  # ajusta tamaño
+    logo_img = ImageTk.PhotoImage(img_redimensionada)
+except Exception as e:
+    print(f"No se pudo cargar el logo: {e}")
+    logo_img = None
+
+frame_header = tk.Frame(ventana, bg="#0a0f1e")
+frame_header.pack(pady=10)
+
+if logo_img:
+    tk.Label(frame_header, image=logo_img, bg="#0a0f1e").pack(side=tk.LEFT, padx=10)
+
+tk.Label(
+    frame_header,
+    text="CYBERPYME",
+    font=("Helvetica", 24, "bold"),
+    fg="#00d4ff",
+    bg="#0a0f1e"
+).pack(side=tk.LEFT, padx=5)
 tk.Label(ventana, text="Módulo de Detección de Puertos Abiertos", font=("Helvetica", 12), fg="white", bg="#0a0f1e").pack()
 
 # Marco de búsqueda

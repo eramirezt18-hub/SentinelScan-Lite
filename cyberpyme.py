@@ -5,6 +5,7 @@ import platform
 import threading
 import socket
 import re
+from PIL import Image, ImageTk
 
 # --- Función para obtener la IP local ---
 def obtener_ip_local():
@@ -98,7 +99,28 @@ ventana.title("CyberPyme - Escudo para tu Pyme")
 ventana.geometry("750x600")
 ventana.configure(bg="#0a0f1e")
 
-tk.Label(ventana, text="🛡️ CYBERPYME", font=("Helvetica", 24, "bold"), fg="#00d4ff", bg="#0a0f1e").pack(pady=10)
+try:
+    img_original = Image.open("LogoCyberPyme.png")  # tu imagen (png, jpg, etc.)
+    img_redimensionada = img_original.resize((100, 100), Image.Resampling.LANCZOS)  # ajusta tamaño
+    logo_img = ImageTk.PhotoImage(img_redimensionada)
+except Exception as e:
+    print(f"No se pudo cargar el logo: {e}")
+    logo_img = None
+
+frame_header = tk.Frame(ventana, bg="#0a0f1e")
+frame_header.pack(pady=10)
+
+if logo_img:
+    tk.Label(frame_header, image=logo_img, bg="#0a0f1e").pack(side=tk.LEFT, padx=10)
+
+tk.Label(
+    frame_header,
+    text="CYBERPYME",
+    font=("Helvetica", 24, "bold"),
+    fg="#00d4ff",
+    bg="#0a0f1e"
+).pack(side=tk.LEFT, padx=5)
+
 tk.Label(ventana, text="Protección inteligente para tu negocio local", font=("Helvetica", 12), fg="gray", bg="#0a0f1e").pack()
 
 ip_actual = obtener_ip_local()
